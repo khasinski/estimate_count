@@ -1,0 +1,10 @@
+module EstimateCount
+  VERSION: String
+  # See the writing guide of rbs: https://github.com/ruby/rbs#guides
+end
+
+module ActiveRecord
+  class Base
+    def self.estimate_count: (?threshold: Integer) -> Integer
+  end
+end
