@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    estimate_count (0.1.0)
+    estimate_count (0.3.0)
       activerecord
 
 GEM
