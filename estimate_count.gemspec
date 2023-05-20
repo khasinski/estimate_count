@@ -27,10 +27,17 @@ Gem::Specification.new do |spec|
   end
   spec.require_paths = ["lib"]
 
-  # Uncomment to register a new dependency of your gem
   spec.add_dependency "activerecord"
-  spec.add_dependency "pg"
 
-  # For more information and examples about making a new gem, check out our
-  # guide at: https://bundler.io/guides/creating_gem.html
+  # Databases
+  spec.add_development_dependency "pg"
+  spec.add_development_dependency "mysql2"
+  spec.add_development_dependency "sqlite3"
+
+  # Pagination
+  spec.add_development_dependency "will_paginate"
+  spec.add_development_dependency "kaminari"
+
+  # Testing
+  spec.add_development_dependency "rspec"
 end

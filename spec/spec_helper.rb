@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require "estimate_count"
+require "test_helper"
+require "active_record"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
