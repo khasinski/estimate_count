@@ -12,6 +12,9 @@ services:
           - 3306:3306
       volumes:
           - ./db/mysql:/var/lib/mysql
+      healthcheck:
+          test: [ "CMD", "mysql", "-u", "root", "-e", "USE test;" ]
+          retries: 1
   postgresql:
       image: postgres:15-alpine
       environment:

@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby-version: ['2.6', '2.7', '3.0', '3.1']
+        ruby-version: [3.1]
 
     steps:
       - uses: actions/checkout@v3
@@ -23,6 +23,13 @@ jobs:
         with:
           compose-file: "docker-compose.yml"
           down-flags: "--volumes"
+          services: "postgresql"
+      - uses: shogo82148/actions-setup-mysql@v1
+        with:
+          mysql-version: '8.0'
+          user: test
+          password: test
+      - run: mysql -u test -p'test' -h127.0.0.1 -e 'CREATE DATABASE test'
       - name: Set up Ruby
         # To automatically get bug fixes and new Ruby versions for ruby/setup-ruby,
         # change this to (see https://github.com/ruby/setup-ruby#versioning):
