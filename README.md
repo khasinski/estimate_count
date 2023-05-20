@@ -2,11 +2,17 @@
 
 This gems help with a common pagination problem in which the calculation of total number of pages takes too long.
 
-Currently only PostgreSQL is supported.
+Currently only PostgreSQL and MySQL are supported.
 
 ## Problem
 
-Let's say you have a table with 1 million records and you want to paginate it. You add filters and sorting. You can use the `count` method to get the total number of records in the table. However, this method will take a long time to execute. This is because the database has to count all the records in the table.
+Let's say you have a table with 1 million records and you want to paginate it. You add filters and sorting. 
+
+Suddenly your performance drops even though you're only displaying a few records per page.
+
+The problematic part is `#count`, which causes the entire scope to be calculated and then counted. This is slow.  However you can use table statistics to estimate the number of records in the table (same as `rows` in `EXPLAIN`). This is much faster.
+
+Be aware though that this rely on table statistics being refreshed from time to time.
 
 ## Example
 Given the following code:
@@ -31,16 +37,12 @@ In a view:
 # app/views/users/index.html.erb
 Total pages - <%= @users.total_pages %>
 ```
-The above code will work fine. However, if you have a table with 1 million records, the `count` method will take a long time to execute. This is because the database has to count all the records in the table.
+If you want to use estimate number of pages change the above line to:
 
 ```ruby
 # app/views/users/index.html.erb
-Total pages - About <%= (@users.estimate_count / @users.per_page).ceil  %>
+Total pages - About <%= (@users.estimate_count / @users.per_page).ceil %>
 ```
-
-This extracts the estimation from PostgreSQL statistics and uses it to calculate the total number of pages. This is much faster than the `count` method. 
-
-You can use it with any pagination library (or without one).
 
 ## Installation
 
@@ -56,7 +58,7 @@ If bundler is not being used to manage dependencies, install the gem by executin
 
 This gem adds a method `#estimate_count` to the `ActiveRecord::Relation` class.
 
-You can use it for any scope
+You can use it for any scope:
 
 ```ruby
 User.active.estimate_count
@@ -73,7 +75,7 @@ User.active.estimate_count(threshold: 1000)
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+After checking out the repo, run `bin/setup` to install dependencies. Then, run `rspec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
 
 To install this gem onto your local machine, run `bundle exec rake install`. 
 
