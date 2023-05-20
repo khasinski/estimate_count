@@ -47,8 +47,12 @@ GEM
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     method_source (1.0.0)
+    mini_portile2 (2.8.2)
     minitest (5.16.2)
     mysql2 (0.5.5)
+    nokogiri (1.14.2)
+      mini_portile2 (~> 2.8.0)
+      racc (~> 1.4)
     nokogiri (1.14.2-arm64-darwin)
       racc (~> 1.4)
     nokogiri (1.14.2-x86_64-linux)
@@ -77,8 +81,10 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.11.0)
     rspec-support (3.11.0)
-    sqlite3 (1.6.2-arm64-darwin)
-    sqlite3 (1.6.2-x86_64-linux)
+    sqlite3 (1.6.3)
+      mini_portile2 (~> 2.8.0)
+    sqlite3 (1.6.3-arm64-darwin)
+    sqlite3 (1.6.3-x86_64-linux)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
     will_paginate (3.3.1)
@@ -86,8 +92,8 @@ GEM
 PLATFORMS
   arm64-darwin-21
   arm64-darwin-22
-  x86_64-linux
   ruby
+  x86_64-linux
 
 DEPENDENCIES
   estimate_count!
