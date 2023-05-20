@@ -32,11 +32,6 @@ Gem::Specification.new do |spec|
   # Databases
   spec.add_development_dependency "pg"
   spec.add_development_dependency "mysql2"
-  spec.add_development_dependency "sqlite3"
-
-  # Pagination
-  spec.add_development_dependency "will_paginate"
-  spec.add_development_dependency "kaminari"
 
   # Testing
   spec.add_development_dependency "rspec"
