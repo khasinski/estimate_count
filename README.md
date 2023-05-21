@@ -6,15 +6,57 @@ Currently only PostgreSQL and MySQL are supported.
 
 ## Problem
 
-Let's say you have a table with 1 million records and you want to paginate it. You add filters and sorting. 
+Let's say you have a table with millions of records and you want to paginate it. You also add filters and sorting. 
 
 Suddenly your performance drops even though you're only displaying a few records per page.
 
-The problematic part is `#count`, which causes the entire scope to be calculated and then counted. This is slow.  However you can use table statistics to estimate the number of records in the table (same as `rows` in `EXPLAIN`). This is much faster.
+The problematic part is `#count`, which causes the entire scope to be calculated and then counted. This is slow.  
 
-Be aware though that this rely on table statistics being refreshed from time to time.
+However you can use table statistics to estimate the number of records in the table (same as `rows` in `EXPLAIN`). This is much faster.  Be aware though that this rely on table statistics being refreshed from time to time.
 
-## Example
+## Installation
+
+Install the gem and add to the application's Gemfile by executing:
+
+    $ bundle add estimate_count
+
+Or add it to your Gemfile yourself
+
+```ruby
+gem 'estimate_count', '~> 0.4.0'
+```
+
+and run `bundle install`.
+
+## Usage
+
+This gem adds a method `#estimate_count` to `ActiveRecord::Relation` which uses table statistics to estimate the number of records in the table.
+
+You can use it for any scope:
+
+```ruby
+User.active.estimate_count
+# It works with multiple scopes
+Payment.with_deleted.where(created_at: ..1.month.ago).estimate_count
+```
+
+You can pass threshold named argument to determine when estimate should fall back to a regular count. Default is 1000, use `nil` to always use estimate.
+
+```ruby
+# If estimate is > 1000, use estimate, otherwise use count
+User.estimate_count(threshold: 1000)
+# (1.0ms)  EXPLAIN FORMAT=TRADITIONAL SELECT `users`.* FROM `users`
+# (6.6ms)  SELECT COUNT(*) FROM `users`
+# => 10
+
+# Always use estimate
+User.estimate_count(threshold: nil)
+# (1.7ms)  EXPLAIN FORMAT=TRADITIONAL SELECT `users`.* FROM `users`
+# => 10
+
+```
+
+## Pagination example
 Given the following code:
 
 ```ruby
@@ -42,35 +84,6 @@ If you want to use estimate number of pages change the above line to:
 ```ruby
 # app/views/users/index.html.erb
 Total pages - About <%= (@users.estimate_count / @users.per_page).ceil %>
-```
-
-## Installation
-
-Install the gem and add to the application's Gemfile by executing:
-
-    $ bundle add estimate_count
-
-If bundler is not being used to manage dependencies, install the gem by executing:
-
-    $ gem install estimate_count
-
-## Usage
-
-This gem adds a method `#estimate_count` to the `ActiveRecord::Relation` class.
-
-You can use it for any scope:
-
-```ruby
-User.active.estimate_count
-# It works with multiple scopes
-Payment.with_deleted.where(created_at: ..1.month.ago).estimate_count
-```
-
-You can pass threshold named argument to determine when estimate should fall back to a regular count.
-
-```ruby
-# If estimate is > 1000, use estimate, otherwise use count
-User.active.estimate_count(threshold: 1000)
 ```
 
 ## Development
