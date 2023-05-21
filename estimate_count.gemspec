@@ -33,6 +33,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "pg"
   spec.add_development_dependency "mysql2"
 
-  # Testing
+  # Testing & debugging
   spec.add_development_dependency "rspec"
+  spec.add_development_dependency "pry"
 end
