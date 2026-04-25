@@ -23,7 +23,7 @@ Install the gem and add to the application's Gemfile by executing:
 Or add it to your Gemfile yourself
 
 ```ruby
-gem 'estimate_count', '~> 0.4.0'
+gem 'estimate_count', '~> 0.5.0'
 ```
 
 and run `bundle install`.
@@ -85,6 +85,78 @@ If you want to use estimate number of pages change the above line to:
 # app/views/users/index.html.erb
 Total pages - About <%= (@users.estimate_count / @users.per_page).ceil %>
 ```
+
+## Paginator integrations
+
+`estimate_count` ships with drop-in helpers for the three most popular
+Ruby paginators. Each adapter is loaded automatically when the matching
+gem is already required - no configuration needed. If for some reason
+the paginator is loaded after `estimate_count`, `require` the adapter
+explicitly (e.g. `require "estimate_count/kaminari"`).
+
+All adapters accept a `threshold:` option which is forwarded to
+`#estimate_count`, so counts below that threshold still use an exact
+`COUNT(*)`.
+
+### Kaminari
+
+Use `#estimate_page` instead of `#page`. It pre-populates `total_count`
+on the returned relation, so Kaminari skips its own `COUNT(*)` when
+rendering page links.
+
+```ruby
+class UsersController < ApplicationController
+  def index
+    @users = User.active.estimate_page(params[:page])
+    # or with explicit per_page and threshold:
+    @users = User.active.estimate_page(params[:page], per_page: 50, threshold: 5000)
+  end
+end
+```
+
+In the view, use Kaminari normally:
+
+```erb
+<%= paginate @users %>
+Total - about <%= @users.total_count %>
+```
+
+### will_paginate
+
+Use `#estimate_paginate` instead of `#paginate`. It passes the estimated
+row count as `:total_entries`, which will_paginate honors by skipping
+its internal count query.
+
+```ruby
+class UsersController < ApplicationController
+  def index
+    @users = User.active.estimate_paginate(page: params[:page], per_page: 30)
+  end
+end
+```
+
+Any option accepted by `paginate` is passed through unchanged.
+
+### Pagy
+
+Include `Pagy::Backend` in your controller as usual, then call
+`#pagy_estimate` instead of `#pagy`. It injects `:count` into the
+Pagy vars from `#estimate_count`.
+
+```ruby
+class UsersController < ApplicationController
+  include Pagy::Backend
+
+  def index
+    @pagy, @users = pagy_estimate(User.active, items: 25)
+    # threshold is forwarded to estimate_count:
+    @pagy, @users = pagy_estimate(User.active, threshold: 5000)
+  end
+end
+```
+
+If you already supply `:count` yourself, the adapter leaves it alone
+and no estimate query is issued.
 
 ## Development
 

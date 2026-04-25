@@ -33,6 +33,11 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "pg"
   spec.add_development_dependency "mysql2"
 
+  # Paginators (exercised by adapter specs only - never required at runtime)
+  spec.add_development_dependency "kaminari", "~> 1.2"
+  spec.add_development_dependency "will_paginate", "~> 4.0"
+  spec.add_development_dependency "pagy", "~> 6.0"
+
   # Testing & debugging
   spec.add_development_dependency "rspec"
   spec.add_development_dependency "pry"

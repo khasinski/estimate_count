@@ -34,3 +34,12 @@ module ActiveRecord
     end
   end
 end
+
+# Opt-in adapters for popular paginators. They are loaded only when the
+# target gem has already been required, so users who don't use a given
+# paginator pay nothing. If a paginator is loaded after estimate_count,
+# its adapter can be pulled in explicitly with e.g.
+# `require "estimate_count/kaminari"`.
+require_relative "estimate_count/kaminari" if defined?(Kaminari)
+require_relative "estimate_count/will_paginate" if defined?(WillPaginate)
+require_relative "estimate_count/pagy" if defined?(Pagy)

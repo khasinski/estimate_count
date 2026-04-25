@@ -11,32 +11,46 @@ permissions:
 
 jobs:
   test:
-
     runs-on: ubuntu-latest
+
     strategy:
+      fail-fast: false
       matrix:
-        ruby-version: [3.1]
+        ruby-version: ["3.2", "3.3", "3.4"]
+
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: isbang/compose-action@v1.4.1
-        with:
-          compose-file: "docker-compose.yml"
-          down-flags: "--volumes"
-          services: "postgresql"
-      - uses: shogo82148/actions-setup-mysql@v1
+      - uses: actions/checkout@v4
+
+      - name: Set up MySQL 8.0
+        uses: shogo82148/actions-setup-mysql@v1
         with:
           mysql-version: '8.0'
           user: test
           password: test
-      - run: mysql -u test -p'test' -h127.0.0.1 -e 'CREATE DATABASE test'
-      - name: Set up Ruby
-        # To automatically get bug fixes and new Ruby versions for ruby/setup-ruby,
-        # change this to (see https://github.com/ruby/setup-ruby#versioning):
-        # uses: ruby/setup-ruby@v1
-        uses: ruby/setup-ruby@55283cc23133118229fd3f97f9336ee23a179fcf # v1.146.0
+
+      - name: Create MySQL test database
+        run: mysql -u test -p'test' -h 127.0.0.1 -e 'CREATE DATABASE test'
+
+      - name: Set up Ruby ${{ matrix.ruby-version }}
+        uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby-version }}
-          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+          bundler-cache: true
+
       - name: Run tests
         run: bundle exec rspec
