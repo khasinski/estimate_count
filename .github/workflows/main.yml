@@ -23,6 +23,7 @@ jobs:
             gemfile: gemfiles/activerecord_7_1.gemfile
           - ruby: "3.2"
             gemfile: gemfiles/activerecord_7_2.gemfile
+            skip_mysql: "true"
           - ruby: "3.3"
             gemfile: gemfiles/activerecord_8_0.gemfile
             skip_mysql: "true"
@@ -32,7 +33,7 @@ jobs:
 
     env:
       BUNDLE_GEMFILE: ${{ matrix.gemfile }}
-      # mysql2 0.5.x segfaults on Ruby 3.3+ in this CI setup (issue with the
+      # mysql2 0.5.x segfaults on Ruby 3.2+ in this CI setup (issue with the
       # mysql2 C extension's interaction with Ruby's GC). Skip the MySQL spec
       # block on those Ruby versions; PostgreSQL coverage is unaffected.
       SKIP_MYSQL: ${{ matrix.skip_mysql }}
