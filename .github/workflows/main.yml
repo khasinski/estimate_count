@@ -16,7 +16,20 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ruby-version: ["3.2", "3.3", "3.4"]
+        include:
+          - ruby: "3.1"
+            gemfile: gemfiles/activerecord_7_0.gemfile
+          - ruby: "3.1"
+            gemfile: gemfiles/activerecord_7_1.gemfile
+          - ruby: "3.2"
+            gemfile: gemfiles/activerecord_7_2.gemfile
+          - ruby: "3.3"
+            gemfile: gemfiles/activerecord_8_0.gemfile
+          - ruby: "3.4"
+            gemfile: gemfiles/activerecord_8_1.gemfile
+
+    env:
+      BUNDLE_GEMFILE: ${{ matrix.gemfile }}
 
     services:
       postgres:
@@ -46,10 +59,10 @@ jobs:
       - name: Create MySQL test database
         run: mysql -u test -p'test' -h 127.0.0.1 -e 'CREATE DATABASE test'
 
-      - name: Set up Ruby ${{ matrix.ruby-version }}
+      - name: Set up Ruby ${{ matrix.ruby }}
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: ${{ matrix.ruby-version }}
+          ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
 
       - name: Run tests

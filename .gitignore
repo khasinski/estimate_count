@@ -14,3 +14,6 @@
 # Build data
 db
 *.gem
+
+# Per-matrix Gemfile lock files
+gemfiles/*.gemfile.lock

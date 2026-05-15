@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.description = "Uses EXPLAIN to get an estimate count for an ActiveRecord::Relation"
   spec.homepage = "https://github.com/khasinski/estimate_count"
   spec.license = "MIT"
-  spec.required_ruby_version = ">= 2.6.0"
+  spec.required_ruby_version = ">= 3.1.0"
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = "https://github.com/khasinski/estimate_count"
