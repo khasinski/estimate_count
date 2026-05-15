@@ -49,8 +49,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install libmysqlclient
-        run: sudo apt-get update && sudo apt-get install -y default-libmysqlclient-dev
+      - name: Install MariaDB client library
+        # libmariadb-dev is API-compatible with libmysqlclient and avoids
+        # a Ruby 3.3+ GC interaction in mysql2 that segfaults on the stock
+        # libmysqlclient shipped via shogo82148/actions-setup-mysql.
+        run: sudo apt-get update && sudo apt-get install -y libmariadb-dev libmariadb-dev-compat
 
       - name: Set up MySQL 8.0
         uses: shogo82148/actions-setup-mysql@v1
