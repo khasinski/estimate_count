@@ -17,6 +17,7 @@ RSpec.describe EstimateCount do
   end
 
   context "with a MySQL database" do
+    before { skip "MySQL skipped via SKIP_MYSQL" if ENV["SKIP_MYSQL"] == "true" }
     before { load_database("mysql") }
 
     let!(:table) { MySQLTable.create(level: 1) }
