@@ -67,12 +67,12 @@ GEM
       drb (~> 2.0)
       prism (~> 1.5)
     mysql2 (0.5.5)
-    nokogiri (1.18.10)
+    nokogiri (1.19.4)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
-    nokogiri (1.18.10-arm64-darwin)
+    nokogiri (1.19.4-arm64-darwin)
       racc (~> 1.4)
-    nokogiri (1.18.10-x86_64-linux-gnu)
+    nokogiri (1.19.4-x86_64-linux-gnu)
       racc (~> 1.4)
     pagy (6.5.0)
     pg (1.4.1)
@@ -127,4 +127,4 @@ DEPENDENCIES
   will_paginate (~> 4.0)
 
 BUNDLED WITH
-   2.3.10
+  4.0.13
